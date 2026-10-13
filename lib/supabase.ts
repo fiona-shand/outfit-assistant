@@ -9,6 +9,12 @@ export function db(): SupabaseClient {
     const url = process.env.SUPABASE_URL;
     const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
     if (!url || !key) throw new Error("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set");
+    const role = keyRole(key);
+    if (role === "anon" || role === "publishable") {
+      throw new Error(
+        "SUPABASE_SERVICE_ROLE_KEY is the public (anon/publishable) key, which can't see your data. Use the secret service_role key from Supabase → Project Settings → API.",
+      );
+    }
     client = createClient(url, key, { auth: { persistSession: false } });
   }
   return client;
@@ -43,4 +49,16 @@ export async function signedUrls(paths: (string | null | undefined)[]): Promise<
   const out: Record<string, string> = {};
   for (const d of data) if (d.path && d.signedUrl) out[d.path] = d.signedUrl;
   return out;
+}
+
+/** Which kind of Supabase key this is: legacy JWT keys carry a role; new keys have a prefix. */
+export function keyRole(key: string): string {
+  if (key.startsWith("sb_publishable_")) return "publishable";
+  if (key.startsWith("sb_secret_")) return "secret";
+  try {
+    const payload = JSON.parse(Buffer.from(key.split(".")[1], "base64url").toString());
+    return typeof payload.role === "string" ? payload.role : "unknown";
+  } catch {
+    return "unknown";
+  }
 }
