@@ -134,6 +134,22 @@ describe("combos", () => {
     expect(isCompleteOutfit([top1.id, bottom.id, shoes.id, "missing"], byId)).toBe(false);
   });
 
+  it("allows two layered tops but never three", () => {
+    const top3 = item("top");
+    const map = new Map([...all, top3].map((i) => [i.id, i]));
+    expect(isCompleteOutfit([top1.id, top2.id, bottom.id, shoes.id], map)).toBe(true);
+    expect(isCompleteOutfit([top1.id, top2.id, top3.id, bottom.id, shoes.id], map)).toBe(false);
+  });
+
+  it("rejects two pairs of shoes or a dress with a bottom", () => {
+    const shoes2 = item("shoes");
+    const dress = item("dress");
+    const map = new Map([...all, shoes2, dress].map((i) => [i.id, i]));
+    expect(isCompleteOutfit([top1.id, bottom.id, shoes.id, shoes2.id], map)).toBe(false);
+    expect(isCompleteOutfit([dress.id, bottom.id, shoes.id], map)).toBe(false);
+    expect(isCompleteOutfit([dress.id, shoes.id, watch.id], map)).toBe(true);
+  });
+
   it("fallback avoids repeating a recent combination", () => {
     const history: WearEntry[] = [{ date: "2026-09-20", itemIds: [top1.id, bottom.id, shoes.id] }];
     const combos = recentCombos(history, byId, today);

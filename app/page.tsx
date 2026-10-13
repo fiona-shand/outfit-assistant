@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useState } from "react";
-import { Burst, Heart, WeatherIcon } from "@/components/Icons";
+import { Burst, WeatherIcon } from "@/components/Icons";
 import { Alert, Brand, ItemThumb, UnderlineTabs } from "@/components/ui";
 import { api, useOnMount } from "@/lib/client";
 import type { Item, Suggestion } from "@/lib/types";
@@ -134,18 +134,6 @@ export default function TodayPage() {
 
       {s ? (
         <section className="space-y-5">
-          {!showBackup && s.reasoning && (
-            <div className="space-y-3">
-              <div className="flex items-center gap-3">
-                <span className="flex h-11 w-11 items-center justify-center rounded-full bg-pink">
-                  <Heart className="h-5 w-5 text-accent" />
-                </span>
-                <span className="text-[16px]">{timeLabel(s.created_at)}</span>
-              </div>
-              <p className="script text-[30px] leading-[1.1]">&ldquo;{s.reasoning}&rdquo;</p>
-            </div>
-          )}
-
           <h2 className="display text-[34px]">{showBackup ? "Plan B" : s.headline}</h2>
 
           <ul className="grid grid-cols-3 gap-x-3 gap-y-4">
@@ -202,10 +190,4 @@ export default function TodayPage() {
 
 function shortSummary(s: string) {
   return { "Partly cloudy": "& mild", Overcast: "& grey", "Snow showers": "& snowy", Thunderstorm: "& stormy" }[s] ?? `& ${s.toLowerCase()}`;
-}
-
-function timeLabel(iso: string) {
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return "this morning";
-  return d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" }).toLowerCase();
 }
