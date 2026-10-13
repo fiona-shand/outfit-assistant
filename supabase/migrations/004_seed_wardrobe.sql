@@ -1,5 +1,5 @@
 -- Fiona's starting wardrobe and outfit history, catalogued from her first
--- fourteen outfit photos. Dates are approximate - edit if needed.
+-- eighteen outfit photos. Dates are approximate - edit if needed.
 -- Safe to re-run: fixed ids, conflicts are skipped. Thumbnails get added
 -- automatically the first time each piece is matched in a logged photo.
 
@@ -36,10 +36,19 @@ insert into items (id, category, name, colors, pattern, material, formality, war
   ('ed2662b6-eae8-5889-bf4d-c4603b65d526', 'outerwear', 'Black pinstripe oversized blazer', '{black,white}', 'pinstripe', 'suiting', 4, 3, '{autumn,winter,spring}', 'Long boyfriend-fit black blazer with white pinstripes; throws over denim or trousers.'),
   ('db79b97c-fec2-51f8-b0f1-cc2dcb6cb1f7', 'shoes', 'Red suede sneakers', '{red,white}', 'stripe', 'suede', 2, 3, '{spring,summer,autumn}', 'Slim red suede trainers with a white side stripe (Speedcat style) - instant colour pop.'),
   ('40996183-22d5-55fc-b4bf-cd4d10067424', 'shoes', 'Black leather gum-sole sneakers', '{black,white}', 'solid', 'leather', 2, 3, '{spring,autumn,winter}', 'Low black leather trainers with gum soles (Samba style).'),
-  ('517f8125-4c3a-51fb-9fc6-1ff8b8a3281a', 'shoes', 'Dark brown patent square-toe flats', '{dark brown}', 'solid', 'patent leather', 3, 2, '{autumn,winter,spring}', 'Glossy chocolate square-toe ballet flats; polished with cuffed denim.'),
+  ('517f8125-4c3a-51fb-9fc6-1ff8b8a3281a', 'shoes', 'Dark brown patent Mary Jane flats', '{dark brown}', 'solid', 'patent leather', 3, 2, '{autumn,winter,spring}', 'Glossy chocolate square-toe Mary Janes with a slim strap; polished with cuffed denim.'),
   ('cbecbcc3-def1-5cd5-ab0f-2cce9eb1bf1b', 'accessory', 'Silver star pendant necklace', '{silver}', 'solid', 'silver', 2, 3, '{}', 'Long silver chain with a chunky star pendant.'),
   ('4bd917b5-b932-5881-8cec-3a335078aa0c', 'accessory', 'Green paisley silk neck scarf', '{green,cream}', 'paisley', 'silk', 3, 3, '{}', 'Small green paisley scarf knotted bandana-style at the neck.'),
   ('d6032f29-42ef-5913-9601-8060fc0bbee8', 'accessory', 'Chunky gold chain necklace', '{gold}', 'solid', 'gold-tone metal', 3, 3, '{}', 'Short chunky gold chain, layers well with open collars.'),
+  ('4fbe4405-b529-5137-8e6f-180766bce9e3', 'top', 'Mountain intarsia V-neck jumper', '{pale blue,cream,grey,teal}', 'intarsia', 'soft knit', 2, 4, '{autumn,winter}', 'Slouchy pale blue V-neck with a grey mountain and teal pine-tree scene knitted across the front.'),
+  ('6c4f21b8-313d-5c9a-92f3-f5526fb52ce0', 'top', 'Chocolate fitted baby tee', '{chocolate brown}', 'solid', 'stretch jersey', 2, 1, '{spring,summer,autumn}', 'Snug cap-sleeve tee in dark chocolate, tucked into high-rise jeans.'),
+  ('375ffb03-e361-5c5f-b366-9d9f28cf8fdd', 'top', 'Red knit jumper', '{red}', 'solid', 'knit', 2, 3, '{autumn,winter,spring}', 'Bright red jumper - mostly worn knotted over the shoulders as a colour pop.'),
+  ('035bfe35-c264-5416-9b76-040549a7ed5f', 'bottom', 'Ecru wide-leg jeans with deep cuffs', '{ecru}', 'solid', 'denim', 2, 3, '{spring,summer,autumn}', 'High-rise cream/ecru wide-leg jeans with a deep rolled cuff.'),
+  ('4e0923d3-9c88-5a3a-baf0-15418d23428f', 'bottom', 'Light-wash straight jeans', '{light blue}', 'solid', 'denim', 2, 3, '{spring,summer,autumn,winter}', 'High-rise light-wash straight jeans with a small turn-up.'),
+  ('91c9c53b-3e6c-5935-abde-9a2d5dec1943', 'bottom', 'Navy pinstripe low-rise trousers', '{navy}', 'pinstripe', 'suiting', 4, 3, '{autumn,winter,spring}', 'Low-rise straight navy trousers with a faint pinstripe and cuffed hem.'),
+  ('cdd7cb27-680c-5bea-b435-ba8073a28798', 'shoes', 'Cream trail sneakers', '{cream,white}', 'solid', 'mesh', 1, 3, '{spring,autumn,winter}', 'Chunky cream technical trainers (Salomon style) - sporty contrast with knits and denim.'),
+  ('b929e45d-2e62-5af4-93e8-89883493b89d', 'shoes', 'Grey felt clogs', '{grey}', 'solid', 'wool felt', 2, 4, '{autumn,winter}', 'Grey felted wool clogs with a cork sole, worn with white socks.'),
+  ('7aca9287-1321-5925-92bb-7696beab574f', 'accessory', 'Brown leather belt', '{brown,gold}', 'solid', 'leather', 3, 3, '{}', 'Brown leather belt with a gold buckle - warms up cream and denim.'),
   ('471cb808-9d42-5f37-bb4a-eb9ae76e1425', 'accessory', 'Gold oval pendant necklace', '{gold}', 'solid', 'gold', 3, 3, '{}', 'Fine gold chain with a small oval locket-style pendant.'),
   ('d905823e-cf64-5c02-870b-73999d4f5132', 'accessory', 'Long pearl and gold bead necklace', '{cream,gold}', 'beaded', 'pearl', 3, 3, '{}', 'Long strand of small pearls and gold beads; layer with the oval pendant.'),
   ('ac61d21e-c95c-5818-ae24-618dbf40b91e', 'accessory', 'Silver bracelet stack', '{silver}', 'solid', 'silver', 3, 3, '{}', 'A few slim silver bangles and chain bracelets worn together.'),
@@ -47,6 +56,39 @@ insert into items (id, category, name, colors, pattern, material, formality, war
   ('4467f7a2-fa57-51c1-8509-16abedb3b13d', 'accessory', 'Chocolate leather tote', '{chocolate brown}', 'solid', 'leather', 3, 3, '{}', 'Slouchy dark brown leather tote with long shoulder straps.'),
   ('7f3b069c-91f2-50e2-b292-2eaff5309ddf', 'accessory', 'Black leather shoulder bag', '{black}', 'solid', 'leather', 3, 3, '{}', 'Slim black leather shoulder bag that sits under the arm.')
 on conflict (id) do nothing;
+
+insert into outfit_logs (id, worn_on, status) values ('fcb8b61e-4dae-5afd-a092-8db8de3dfc30', '2026-09-15', 'confirmed') on conflict (id) do nothing;
+insert into outfit_log_items (log_id, item_id) values
+  ('fcb8b61e-4dae-5afd-a092-8db8de3dfc30', '4fbe4405-b529-5137-8e6f-180766bce9e3'),
+  ('fcb8b61e-4dae-5afd-a092-8db8de3dfc30', '035bfe35-c264-5416-9b76-040549a7ed5f'),
+  ('fcb8b61e-4dae-5afd-a092-8db8de3dfc30', '7aca9287-1321-5925-92bb-7696beab574f'),
+  ('fcb8b61e-4dae-5afd-a092-8db8de3dfc30', 'cdd7cb27-680c-5bea-b435-ba8073a28798')
+on conflict do nothing;
+
+insert into outfit_logs (id, worn_on, status) values ('830e700d-49dd-5e23-8402-aa85304b3700', '2026-09-16', 'confirmed') on conflict (id) do nothing;
+insert into outfit_log_items (log_id, item_id) values
+  ('830e700d-49dd-5e23-8402-aa85304b3700', 'aeaee3d7-2abc-5008-b2aa-a5d822a7fe9a'),
+  ('830e700d-49dd-5e23-8402-aa85304b3700', 'f60631b0-331f-5e08-8f2e-3dc28919a7ae'),
+  ('830e700d-49dd-5e23-8402-aa85304b3700', '035bfe35-c264-5416-9b76-040549a7ed5f'),
+  ('830e700d-49dd-5e23-8402-aa85304b3700', '860b2e85-f13c-5382-9bce-85622c5bd827'),
+  ('830e700d-49dd-5e23-8402-aa85304b3700', 'b929e45d-2e62-5af4-93e8-89883493b89d')
+on conflict do nothing;
+
+insert into outfit_logs (id, worn_on, status) values ('5c401aa0-a440-5bdf-b62e-e867cd36c656', '2026-09-17', 'confirmed') on conflict (id) do nothing;
+insert into outfit_log_items (log_id, item_id) values
+  ('5c401aa0-a440-5bdf-b62e-e867cd36c656', 'e1750b63-416a-5ca9-82d4-b067edc60c2a'),
+  ('5c401aa0-a440-5bdf-b62e-e867cd36c656', '375ffb03-e361-5c5f-b366-9d9f28cf8fdd'),
+  ('5c401aa0-a440-5bdf-b62e-e867cd36c656', '91c9c53b-3e6c-5935-abde-9a2d5dec1943'),
+  ('5c401aa0-a440-5bdf-b62e-e867cd36c656', 'b929e45d-2e62-5af4-93e8-89883493b89d')
+on conflict do nothing;
+
+insert into outfit_logs (id, worn_on, status) values ('65ca423d-d399-5285-8511-4f8b0575180e', '2026-09-18', 'confirmed') on conflict (id) do nothing;
+insert into outfit_log_items (log_id, item_id) values
+  ('65ca423d-d399-5285-8511-4f8b0575180e', '6c4f21b8-313d-5c9a-92f3-f5526fb52ce0'),
+  ('65ca423d-d399-5285-8511-4f8b0575180e', '4e0923d3-9c88-5a3a-baf0-15418d23428f'),
+  ('65ca423d-d399-5285-8511-4f8b0575180e', '7aca9287-1321-5925-92bb-7696beab574f'),
+  ('65ca423d-d399-5285-8511-4f8b0575180e', '517f8125-4c3a-51fb-9fc6-1ff8b8a3281a')
+on conflict do nothing;
 
 insert into outfit_logs (id, worn_on, status) values ('dfb9d0c5-41cf-58cc-8cd7-5d7a3d7926b9', '2026-09-22', 'confirmed') on conflict (id) do nothing;
 insert into outfit_log_items (log_id, item_id) values
