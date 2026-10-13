@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { api } from "@/lib/client";
+import { api, WELCOMED_KEY } from "@/lib/client";
 
 /** Registers the service worker and quietly refreshes location if already permitted. */
 export default function ClientBoot() {
@@ -11,7 +11,16 @@ export default function ClientBoot() {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("/sw.js", { scope: "/", updateViaCache: "none" }).catch(() => {});
     }
-    if (path === "/login" || !("geolocation" in navigator) || !navigator.permissions) return;
+    // First visit on this device: show the welcome page once.
+    if (path === "/") {
+      try {
+        if (!localStorage.getItem(WELCOMED_KEY)) {
+          window.location.replace("/welcome");
+          return;
+        }
+      } catch {}
+    }
+    if (path === "/welcome" || path === "/login" || !("geolocation" in navigator) || !navigator.permissions) return;
     navigator.permissions
       .query({ name: "geolocation" })
       .then((status) => {

@@ -50,7 +50,7 @@ curl -H "Authorization: Bearer $CRON_SECRET" "https://YOUR-APP-URL/api/cron/dail
 ```
 
 ### 5. On your phone
-1. Open your Vercel URL and sign in with `APP_PASSWORD`.
+1. Open your Vercel URL. You'll see a welcome page once; then you're in. (Set `APP_PASSWORD` in Vercel if you want the app locked behind a password.)
 2. **iPhone:** tap Share → **Add to Home Screen**, then open the app from the home-screen icon. Push notifications only work this way on iOS (16.4+). On Android, use Chrome's *Install app* prompt.
 3. **Settings** → *Use my location* → *Enable notifications* → *Send test*.
 4. **Style** → add your inspiration photos (select many at once).
@@ -67,6 +67,6 @@ npm run lint && npm run typecheck
 Push notifications need HTTPS. Use `next dev --experimental-https`, or test them on the deployed app.
 
 ## Notes
-- It's a single-user app with a password login. Every table has row-level security on with no policies, so only the server (service-role key) can access the data. Photos live in a **private** storage bucket and are served through 1-hour signed URLs.
+- It's a single-user app. Without `APP_PASSWORD` anyone who has the URL can open it, so keep the link private or set a password. Every table has row-level security on with no policies, so only the server (service-role key) can access the data. Photos live in a **private** storage bucket and are served through 1-hour signed URLs.
 - Each outfit photo costs one Claude call (a few cents on Opus). Set `ANTHROPIC_MODEL=claude-sonnet-5-5` to cut that roughly in half.
 - Logging a photo for a day replaces that day's earlier log (for example, an "I'm wearing this" tap).

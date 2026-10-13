@@ -15,7 +15,7 @@ const TABS = [
 /** Floating row of rounded-square buttons. */
 export default function Nav() {
   const path = usePathname();
-  if (path === "/login") return null;
+  if (path === "/welcome" || path === "/login") return null;
   return (
     <nav className="pointer-events-none fixed inset-x-0 bottom-0 z-20 pb-[max(0.9rem,env(safe-area-inset-bottom))]">
       <ul className="pointer-events-auto mx-auto flex w-fit gap-2.5 px-3">

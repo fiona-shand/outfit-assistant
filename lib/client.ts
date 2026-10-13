@@ -12,7 +12,7 @@ export async function api<T = unknown>(
     body: opts.body ? JSON.stringify(opts.body) : undefined,
   });
   if (res.status === 401 && !url.startsWith("/api/auth")) {
-    window.location.href = "/login";
+    window.location.href = "/welcome";
     throw new Error("Not signed in");
   }
   const data = await res.json().catch(() => ({}));
@@ -80,6 +80,9 @@ export function urlBase64ToUint8Array(base64String: string): Uint8Array<ArrayBuf
   for (let i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
   return out;
 }
+
+/** localStorage flag: the welcome page has been seen on this device. */
+export const WELCOMED_KEY = "oa_welcomed";
 
 export function todayLocal(): string {
   return new Intl.DateTimeFormat("en-CA").format(new Date());

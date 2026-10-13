@@ -21,6 +21,7 @@ export default function SettingsPage() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [pushSupported, setPushSupported] = useState(true);
+  const [passwordOn, setPasswordOn] = useState(false);
 
   async function load() {
     const data = await api<ProfileData>("/api/profile");
@@ -30,6 +31,9 @@ export default function SettingsPage() {
 
   useOnMount(() => {
     load().catch((e) => setError(e.message));
+    api<{ password_required: boolean }>("/api/auth/status")
+      .then((r) => setPasswordOn(r.password_required))
+      .catch(() => {});
     setPushSupported("serviceWorker" in navigator && "PushManager" in window && "Notification" in window);
   });
 
@@ -182,15 +186,17 @@ export default function SettingsPage() {
         </button>
       </section>
 
-      <button
-        className="btn-ghost w-full"
-        onClick={async () => {
-          await api("/api/auth/logout", { body: {} });
-          window.location.href = "/login";
-        }}
-      >
-        Sign out
-      </button>
+      {passwordOn && (
+        <button
+          className="btn-ghost w-full"
+          onClick={async () => {
+            await api("/api/auth/logout", { body: {} });
+            window.location.href = "/welcome";
+          }}
+        >
+          Sign out
+        </button>
+      )}
     </div>
   );
 }
