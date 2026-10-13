@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { Alert, Brand, ItemThumb, TINT, UnderlineTabs } from "@/components/ui";
 import { api, CATEGORY_LABEL, useOnMount } from "@/lib/client";
 import { CATEGORIES, SEASONS, type Item } from "@/lib/types";
 
@@ -11,6 +12,15 @@ interface Log {
   photo_url: string | null;
   items: { id: string; name: string; category: string }[];
 }
+
+const PLURAL: Record<string, string> = {
+  top: "Tops",
+  bottom: "Bottoms",
+  dress: "Dresses",
+  shoes: "Shoes",
+  outerwear: "Layers",
+  accessory: "Accessories",
+};
 
 export default function WardrobePage() {
   const [items, setItems] = useState<ItemWithThumb[] | null>(null);
@@ -33,61 +43,50 @@ export default function WardrobePage() {
   useOnMount(load);
 
   const visible = (items ?? []).filter((i) => showRetired || i.active);
+  const activeCount = items?.filter((i) => i.active).length ?? 0;
 
   return (
-    <div className="space-y-5">
-      <header className="flex items-end justify-between">
-        <div>
-          <p className="label">{items ? `${items.filter((i) => i.active).length} items` : " "}</p>
-          <h1 className="mt-1 text-2xl font-semibold">Wardrobe</h1>
-        </div>
-        <div className="flex rounded-full border border-line bg-card p-0.5 text-sm">
-          {(["items", "history"] as const).map((t) => (
-            <button
-              key={t}
-              onClick={() => setTab(t)}
-              className={`rounded-full px-3 py-1 ${tab === t ? "bg-accent text-accent-ink" : "text-muted"}`}
-            >
-              {t === "items" ? "Items" : "History"}
-            </button>
-          ))}
-        </div>
+    <div className="space-y-7">
+      <Brand />
+      <UnderlineTabs
+        tabs={[
+          { value: "items", label: "Pieces" },
+          { value: "history", label: "Worn" },
+        ]}
+        value={tab}
+        onChange={setTab}
+      />
+      <header>
+        <h1 className="display text-[60px]">{tab === "items" ? "Wardrobe" : "Outfit diary"}</h1>
+        <p className="mt-3 text-[18px]">
+          {tab === "items" ? `${activeCount} pieces in rotation` : `${logs.length} outfits logged`}
+        </p>
       </header>
 
-      {error && <p className="rounded-xl bg-red-500/10 px-3 py-2 text-sm text-red-600">{error}</p>}
+      {error && <Alert>{error}</Alert>}
 
       {tab === "items" && (
         <>
           {items?.length === 0 && (
-            <p className="rounded-xl bg-soft px-3 py-2.5 text-sm">
-              Nothing here yet. Log an outfit photo and the pieces will show up here.
-            </p>
+            <Alert kind="info">Nothing here yet. Log an outfit photo and the pieces will appear here.</Alert>
           )}
           {CATEGORIES.map((cat) => {
             const list = visible.filter((i) => i.category === cat);
             if (!list.length) return null;
             return (
-              <section key={cat} className="space-y-2">
-                <h2 className="label">
-                  {CATEGORY_LABEL[cat]} · {list.length}
-                </h2>
-                <ul className="grid grid-cols-3 gap-2">
+              <section key={cat} className="space-y-3">
+                <div className="flex items-baseline gap-3">
+                  <h2 className="display text-[32px]">{PLURAL[cat]}</h2>
+                  <span className={`rounded-full px-2.5 py-0.5 text-[13px] text-tile-ink ${TINT[cat]}`}>{list.length}</span>
+                </div>
+                <ul className="grid grid-cols-3 gap-x-3 gap-y-4">
                   {list.map((item) => (
                     <li key={item.id}>
-                      <button className="w-full space-y-1 text-left" onClick={() => setEditing(item)}>
-                        <div
-                          className={`aspect-square overflow-hidden rounded-xl bg-soft ${item.active ? "" : "opacity-40 grayscale"}`}
-                        >
-                          {item.thumb_url ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img src={item.thumb_url} alt={item.name} className="h-full w-full object-cover" />
-                          ) : (
-                            <div className="flex h-full items-center justify-center text-2xl">👕</div>
-                          )}
-                        </div>
-                        <div className="truncate text-xs font-medium">{item.name}</div>
-                        <div className="text-[11px] text-muted">
-                          {item.wear_count}× · {item.last_worn_at ? `last ${shortDate(item.last_worn_at)}` : "not worn yet"}
+                      <button className="w-full space-y-1.5 text-left" onClick={() => setEditing(item)}>
+                        <ItemThumb item={item} className={item.active ? "" : "opacity-40 grayscale"} />
+                        <div className="truncate text-[13px] font-medium">{item.name}</div>
+                        <div className="text-[12px] text-muted">
+                          {item.last_worn_at ? `worn ${shortDate(item.last_worn_at)}` : "not worn yet"} · {item.wear_count}×
                         </div>
                       </button>
                     </li>
@@ -98,38 +97,44 @@ export default function WardrobePage() {
           })}
           {items?.some((i) => !i.active) && (
             <button className="text-sm text-muted underline" onClick={() => setShowRetired((s) => !s)}>
-              {showRetired ? "Hide retired items" : "Show retired items"}
+              {showRetired ? "Hide retired pieces" : "Show retired pieces"}
             </button>
           )}
         </>
       )}
 
       {tab === "history" && (
-        <ul className="space-y-2">
-          {logs.length === 0 && <p className="text-sm text-muted">No outfits logged yet.</p>}
-          {logs.map((l) => (
-            <li key={l.id} className="card flex gap-3 p-3">
+        <ul className="space-y-3">
+          {logs.length === 0 && <Alert kind="info">No outfits logged yet.</Alert>}
+          {logs.map((l, idx) => (
+            <li key={l.id} className="card flex gap-4 p-3">
               {l.photo_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={l.photo_url} alt="" className="h-24 w-18 shrink-0 rounded-lg object-cover" />
+                <img src={l.photo_url} alt="" className="h-28 w-20 shrink-0 rounded-[18px] object-cover" />
               ) : (
-                <div className="flex h-24 w-18 shrink-0 items-center justify-center rounded-lg bg-soft text-xl">✓</div>
+                <div
+                  className={`flex h-28 w-20 shrink-0 items-center justify-center rounded-[18px] ${
+                    ["bg-sky", "bg-mustard", "bg-pink", "bg-sage"][idx % 4]
+                  }`}
+                >
+                  <span className="script text-[22px] text-tile-ink">worn!</span>
+                </div>
               )}
-              <div className="min-w-0 flex-1 text-sm">
+              <div className="min-w-0 flex-1 py-1">
                 <div className="flex items-center justify-between">
-                  <span className="font-medium">{shortDate(l.worn_on, true)}</span>
+                  <span className="display text-[24px]">{shortDate(l.worn_on, true)}</span>
                   <button
-                    className="text-xs text-muted underline"
+                    className="text-[13px] text-muted underline"
                     onClick={async () => {
                       if (!confirm("Delete this outfit log?")) return;
                       await api(`/api/outfits/${l.id}`, { method: "DELETE" });
                       load();
                     }}
                   >
-                    Delete
+                    delete
                   </button>
                 </div>
-                <p className="mt-1 text-muted">{l.items.map((i) => i.name).join(" · ")}</p>
+                <p className="mt-1 text-[14px] leading-snug text-muted">{l.items.map((i) => i.name).join(" · ")}</p>
               </div>
             </li>
           ))}
@@ -195,29 +200,28 @@ function EditSheet({
   }
 
   return (
-    <div className="fixed inset-0 z-30 flex items-end bg-black/40 sm:items-center sm:justify-center" onClick={onClose}>
+    <div className="fixed inset-0 z-30 flex items-end bg-ink/40 sm:items-center sm:justify-center" onClick={onClose}>
       <div
-        className="max-h-[90dvh] w-full space-y-4 overflow-y-auto rounded-t-3xl bg-card p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:max-w-md sm:rounded-3xl"
+        className="max-h-[90dvh] w-full space-y-5 overflow-y-auto rounded-t-[32px] bg-bg p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:max-w-md sm:rounded-[32px]"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex gap-3">
-          {item.thumb_url && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={item.thumb_url} alt="" className="h-20 w-20 rounded-xl object-cover" />
-          )}
-          <div className="text-sm text-muted">
-            <p>{item.description}</p>
-            <p className="mt-1">
+        <div className="mx-auto h-1.5 w-10 rounded-full bg-line sm:hidden" />
+        <div className="flex gap-4">
+          <ItemThumb item={item} className="w-24 shrink-0" />
+          <div className="min-w-0">
+            <h2 className="display text-[30px]">{item.name}</h2>
+            <p className="mt-1 text-[14px] text-muted">
               {[item.colors.join(", "), item.pattern, item.material].filter(Boolean).join(" · ")}
             </p>
           </div>
         </div>
+        {item.description && <p className="script text-[22px] leading-tight">&ldquo;{item.description}&rdquo;</p>}
 
-        <label className="block space-y-1">
+        <label className="block space-y-1.5">
           <span className="label">Name</span>
           <input className="input" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
         </label>
-        <label className="block space-y-1">
+        <label className="block space-y-1.5">
           <span className="label">Category</span>
           <select
             className="input"
@@ -231,7 +235,7 @@ function EditSheet({
             ))}
           </select>
         </label>
-        <Scale label="Warmth" low="Light" high="Warm" value={form.warmth} onChange={(v) => setForm({ ...form, warmth: v })} />
+        <Scale label="Warmth" low="Light" high="Toasty" value={form.warmth} onChange={(v) => setForm({ ...form, warmth: v })} />
         <Scale
           label="Formality"
           low="Casual"
@@ -239,15 +243,17 @@ function EditSheet({
           value={form.formality}
           onChange={(v) => setForm({ ...form, formality: v })}
         />
-        <div className="space-y-1">
+        <div className="space-y-1.5">
           <span className="label">Seasons</span>
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-2">
             {SEASONS.map((s) => {
               const on = form.seasons.includes(s);
               return (
                 <button
                   key={s}
-                  className={`rounded-full border px-3 py-1 text-sm capitalize ${on ? "border-accent bg-accent text-accent-ink" : "border-line"}`}
+                  className={`rounded-full border-[1.5px] px-4 py-1.5 text-[14px] capitalize ${
+                    on ? "border-ink bg-ink text-bg" : "border-line"
+                  }`}
                   onClick={() =>
                     setForm({ ...form, seasons: on ? form.seasons.filter((x) => x !== s) : [...form.seasons, s] })
                   }
@@ -258,12 +264,17 @@ function EditSheet({
             })}
           </div>
         </div>
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" checked={!form.active} onChange={(e) => setForm({ ...form, active: !e.target.checked })} />
+        <label className="flex items-center gap-2 text-[15px]">
+          <input
+            type="checkbox"
+            className="h-5 w-5 accent-[var(--ink)]"
+            checked={!form.active}
+            onChange={(e) => setForm({ ...form, active: !e.target.checked })}
+          />
           Retired (don&apos;t suggest this any more)
         </label>
 
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && <Alert>{error}</Alert>}
 
         <div className="flex gap-2">
           <button
@@ -279,11 +290,11 @@ function EditSheet({
         </div>
 
         {others.length > 0 && (
-          <div className="space-y-2 border-t border-line pt-4">
+          <div className="space-y-2 border-t-[1.5px] border-line pt-5">
             <span className="label">Duplicate? Merge into…</span>
             <div className="flex gap-2">
               <select className="input" value={mergeInto} onChange={(e) => setMergeInto(e.target.value)}>
-                <option value="">Choose item</option>
+                <option value="">Choose a piece</option>
                 {others.map((o) => (
                   <option key={o.id} value={o.id}>
                     {o.name}
@@ -301,7 +312,7 @@ function EditSheet({
           </div>
         )}
         <button
-          className="text-sm text-red-600 underline"
+          className="text-[14px] text-accent underline"
           disabled={busy}
           onClick={() => {
             if (confirm(`Delete "${item.name}" and remove it from past outfits?`)) {
@@ -309,7 +320,7 @@ function EditSheet({
             }
           }}
         >
-          Delete item
+          Delete piece
         </button>
       </div>
     </div>
@@ -330,22 +341,24 @@ function Scale({
   onChange: (v: number) => void;
 }) {
   return (
-    <div className="space-y-1">
+    <div className="space-y-1.5">
       <span className="label">{label}</span>
-      <div className="flex items-center gap-2 text-xs text-muted">
-        <span className="w-12">{low}</span>
-        <div className="flex flex-1 gap-1">
-          {[1, 2, 3, 4, 5].map((n) => (
-            <button
-              key={n}
-              onClick={() => onChange(n)}
-              className={`h-8 flex-1 rounded-lg border text-sm ${n === value ? "border-accent bg-accent text-accent-ink" : "border-line text-ink"}`}
-            >
-              {n}
-            </button>
-          ))}
-        </div>
-        <span className="w-12 text-right">{high}</span>
+      <div className="flex gap-1.5">
+        {[1, 2, 3, 4, 5].map((n) => (
+          <button
+            key={n}
+            onClick={() => onChange(n)}
+            className={`h-10 flex-1 rounded-xl border-[1.5px] text-[15px] ${
+              n === value ? "border-ink bg-ink text-bg" : "border-line"
+            }`}
+          >
+            {n}
+          </button>
+        ))}
+      </div>
+      <div className="flex justify-between text-[12px] text-muted">
+        <span>{low}</span>
+        <span>{high}</span>
       </div>
     </div>
   );

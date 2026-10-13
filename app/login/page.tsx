@@ -22,22 +22,37 @@ export default function LoginPage() {
   }
 
   return (
-    <form onSubmit={submit} className="mx-auto mt-24 max-w-xs space-y-4 text-center">
-      <div className="text-5xl">👗</div>
-      <h1 className="text-2xl font-semibold">Outfit Assistant</h1>
-      <input
-        type="password"
-        autoComplete="current-password"
-        className="input text-center"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        autoFocus
-      />
-      {error && <p className="text-sm text-red-600">{error}</p>}
-      <button className="btn-primary w-full" disabled={busy || !password}>
-        {busy ? "Signing in…" : "Sign in"}
-      </button>
-    </form>
+    <div className="fixed inset-0 flex flex-col stripes-sky">
+      <div className="flex items-center justify-between bg-[#fdf3d9] px-5 pb-3 pt-[max(1rem,env(safe-area-inset-top))]">
+        <span className="script text-[30px] font-bold text-[#b33a26]">outfits &amp; co.</span>
+        <span className="text-[13px] text-[#2a2118]">your wardrobe, sorted</span>
+      </div>
+      <div className="h-2 scallop" />
+      <div className="flex flex-1 items-center justify-center px-6">
+        <form onSubmit={submit} className="w-full max-w-sm space-y-6 bg-[#fdf3d9] px-7 py-9 text-[#2a2118] shadow-lg">
+          <h1 className="script text-center text-[44px] font-bold leading-none">hello, gorgeous!</h1>
+          <label className="block">
+            <span className="text-[12px]">password</span>
+            <input
+              type="password"
+              autoComplete="current-password"
+              className="mt-1 w-full border-b-[1.5px] border-[#2a2118] bg-transparent py-2 text-[17px] outline-none"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoFocus
+            />
+          </label>
+          {error && <p className="text-center text-sm text-[#b33a26]">{error}</p>}
+          <div className="text-center">
+            <button
+              className="script rounded-[6px] border-[1.5px] border-[#2a2118] px-6 py-1 text-[24px] font-bold disabled:opacity-50"
+              disabled={busy || !password}
+            >
+              {busy ? "one sec…" : "let me in"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 }

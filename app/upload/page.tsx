@@ -2,6 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { Camera } from "@/components/Icons";
+import { Alert, Brand, TINT } from "@/components/ui";
 import { api, CATEGORY_LABEL, compressImage, cropThumb, todayLocal, type BBox } from "@/lib/client";
 import type { Category, Item } from "@/lib/types";
 import { CATEGORIES } from "@/lib/types";
@@ -64,7 +66,7 @@ export default function UploadPage() {
     try {
       const dataUrl = await compressImage(file);
       setPhoto(dataUrl);
-      setBusy("Looking at your outfit…");
+      setBusy("studying your outfit…");
       const res = await api<AnalyzeResult>("/api/outfits/analyze", { body: { image: dataUrl, worn_on: date } });
       setResult(res);
       const thumbs = await Promise.all(res.analysis.items.map((d) => cropThumb(dataUrl, d.bbox).catch(() => null)));
@@ -114,60 +116,74 @@ export default function UploadPage() {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-7">
+      <Brand />
       <header>
-        <p className="label">Daily log</p>
-        <h1 className="mt-1 text-2xl font-semibold">What are you wearing?</h1>
+        <h1 className="display text-[60px]">
+          What are you <em>wearing?</em>
+        </h1>
+        <p className="mt-3 text-[17px] text-muted">
+          A full-length mirror photo works best, with your shoes and accessories in view.
+        </p>
       </header>
 
-      {!result && (
-        <div className="card space-y-4 p-4">
-          <label className="block space-y-1">
-            <span className="label">Date worn</span>
-            <input type="date" className="input" value={date} onChange={(e) => setDate(e.target.value)} />
-          </label>
-          <input
-            ref={fileRef}
-            type="file"
-            accept="image/*"
-            capture="environment"
-            className="hidden"
-            onChange={(e) => onFile(e.target.files?.[0])}
-          />
-          <div className="grid grid-cols-2 gap-2">
-            <button className="btn-primary" disabled={!!busy} onClick={() => fileRef.current?.click()}>
-              📷 Take photo
-            </button>
-            <label className={`btn-ghost cursor-pointer ${busy ? "pointer-events-none opacity-50" : ""}`}>
-              🖼️ Choose photo
-              <input type="file" accept="image/*" className="hidden" onChange={(e) => onFile(e.target.files?.[0])} />
+      {!result && !busy && (
+        <section className="overflow-hidden rounded-[28px] stripes-pink p-5">
+          <div className="space-y-5 bg-[#fdf3d9] px-5 py-7 text-[#2a2118] shadow-sm">
+            <p className="script text-center text-[38px] font-bold leading-none">snap today&rsquo;s fit!</p>
+            <label className="block">
+              <span className="text-[12px]">date worn</span>
+              <input
+                type="date"
+                className="mt-1 w-full border-b-[1.5px] border-[#2a2118] bg-transparent py-2 text-[16px] outline-none"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+              />
             </label>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              className="hidden"
+              onChange={(e) => onFile(e.target.files?.[0])}
+            />
+            <div className="grid grid-cols-2 gap-2.5">
+              <button className="btn bg-[#2a2118] text-[#fdf3d9]" onClick={() => fileRef.current?.click()}>
+                <Camera className="h-5 w-5" /> Camera
+              </button>
+              <label className="btn cursor-pointer border-[1.5px] border-[#2a2118]">
+                Library
+                <input type="file" accept="image/*" className="hidden" onChange={(e) => onFile(e.target.files?.[0])} />
+              </label>
+            </div>
           </div>
-          <p className="text-xs text-muted">
-            Tip: a full-length mirror photo works best, with your shoes and accessories in view.
-          </p>
-        </div>
+        </section>
       )}
 
       {photo && busy && (
-        <div className="card flex items-center gap-3 p-3">
+        <div className="tile flex items-center gap-4 bg-sky p-4">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={photo} alt="" className="h-20 w-16 rounded-lg object-cover" />
-          <p className="animate-pulse text-sm text-muted">{busy}</p>
+          <img src={photo} alt="" className="h-24 w-[72px] rounded-[16px] object-cover" />
+          <p className="script animate-pulse text-[28px] leading-tight">{busy}</p>
         </div>
       )}
 
-      {error && <p className="rounded-xl bg-red-500/10 px-3 py-2 text-sm text-red-600">{error}</p>}
+      {error && <Alert>{error}</Alert>}
 
       {result && (
-        <section className="space-y-3">
-          <div className="card flex gap-3 p-3">
+        <section className="space-y-4">
+          <div className="flex gap-4">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={photo ?? result.photo_url} alt="Your outfit" className="h-32 w-24 rounded-lg object-cover" />
-            <div className="text-sm">
-              <p className="font-medium">{result.analysis.outfit_summary}</p>
-              <p className="mt-1 text-muted">
-                Check each piece: is it something already in your wardrobe, or new? Tap to change.
+            <img
+              src={photo ?? result.photo_url}
+              alt="Your outfit"
+              className="h-40 w-28 shrink-0 rounded-[22px] object-cover"
+            />
+            <div className="space-y-2">
+              <p className="script text-[26px] leading-[1.1]">&ldquo;{result.analysis.outfit_summary}&rdquo;</p>
+              <p className="text-[14px] text-muted">
+                Check each piece: is it already in your wardrobe, or new? Tap to change.
               </p>
             </div>
           </div>
@@ -177,7 +193,7 @@ export default function UploadPage() {
             const matched = wardrobe.find((w) => w.id === r.choice);
             return (
               <div key={r.key} className={`card flex gap-3 p-3 ${r.include ? "" : "opacity-40"}`}>
-                <div className="h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-soft">
+                <div className={`h-24 w-24 shrink-0 overflow-hidden rounded-[18px] ${TINT[r.category] ?? "bg-soft"}`}>
                   {r.thumb && (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={r.thumb} alt="" className="h-full w-full object-cover" />
@@ -186,8 +202,8 @@ export default function UploadPage() {
                 <div className="min-w-0 flex-1 space-y-2">
                   <div className="flex items-center gap-2">
                     <span
-                      className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${
-                        r.choice === "new" ? "bg-accent text-accent-ink" : "bg-soft"
+                      className={`rounded-full px-2.5 py-0.5 text-[12px] font-medium ${
+                        r.choice === "new" ? "bg-accent text-accent-ink" : "bg-sage text-tile-ink"
                       }`}
                     >
                       {r.choice === "new"
@@ -195,7 +211,7 @@ export default function UploadPage() {
                         : `Matched${r.detected.match_item_id === r.choice ? ` · ${Math.round(r.detected.match_confidence * 100)}%` : ""}`}
                     </span>
                     <select
-                      className="rounded-md border border-line bg-card px-1 py-0.5 text-xs"
+                      className="rounded-lg border-[1.5px] border-line bg-card px-1.5 py-0.5 text-[12px]"
                       value={r.category}
                       onChange={(e) => update(r.key, { category: e.target.value as Category, choice: "new" })}
                     >
@@ -206,18 +222,18 @@ export default function UploadPage() {
                       ))}
                     </select>
                     <button
-                      className="ml-auto text-xs text-muted underline"
+                      className="ml-auto text-[12px] text-muted underline"
                       onClick={() => update(r.key, { include: !r.include })}
                     >
-                      {r.include ? "Remove" : "Undo"}
+                      {r.include ? "remove" : "undo"}
                     </button>
                   </div>
                   <select
-                    className="input py-1.5"
+                    className="input py-2 text-[14px]"
                     value={r.choice}
                     onChange={(e) => update(r.key, { choice: e.target.value })}
                   >
-                    <option value="new">➕ New item</option>
+                    <option value="new">New piece</option>
                     {sameCat.map((w) => (
                       <option key={w.id} value={w.id}>
                         {w.name}
@@ -225,16 +241,20 @@ export default function UploadPage() {
                     ))}
                   </select>
                   {r.choice === "new" ? (
-                    <input className="input py-1.5" value={r.name} onChange={(e) => update(r.key, { name: e.target.value })} />
+                    <input
+                      className="input py-2 text-[14px]"
+                      value={r.name}
+                      onChange={(e) => update(r.key, { name: e.target.value })}
+                    />
                   ) : (
-                    matched && <p className="truncate text-xs text-muted">{matched.description}</p>
+                    matched && <p className="truncate text-[12px] text-muted">{matched.description}</p>
                   )}
                 </div>
               </div>
             );
           })}
 
-          <div className="flex gap-2">
+          <div className="flex gap-2.5">
             <button className="btn-primary flex-1" disabled={!!busy || !rows.some((r) => r.include)} onClick={confirm}>
               {busy ?? "Save outfit"}
             </button>

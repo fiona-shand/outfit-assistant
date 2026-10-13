@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { useCallback, useState } from "react";
-import { api, CATEGORY_LABEL, useOnMount } from "@/lib/client";
+import { Burst, Heart, WeatherIcon } from "@/components/Icons";
+import { Alert, Brand, ItemThumb, UnderlineTabs } from "@/components/ui";
+import { api, useOnMount } from "@/lib/client";
 import type { Item, Suggestion } from "@/lib/types";
 
 type ItemWithThumb = Item & { thumb_url: string | null };
@@ -21,7 +23,7 @@ export default function TodayPage() {
   const [data, setData] = useState<TodayData | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [showBackup, setShowBackup] = useState(false);
+  const [tab, setTab] = useState<"main" | "backup">("main");
 
   const load = useCallback(async () => {
     try {
@@ -38,7 +40,7 @@ export default function TodayPage() {
     setError(null);
     try {
       await fn();
-      setShowBackup(false);
+      setTab("main");
       await load();
     } catch (e) {
       setError((e as Error).message);
@@ -48,102 +50,122 @@ export default function TodayPage() {
   }
 
   const s = data?.suggestion;
+  const showBackup = tab === "backup" && !!s?.backup_item_ids.length;
   const byId = new Map(data?.items.map((i) => [i.id, i]));
-  const ids = s ? (showBackup && s.backup_item_ids.length ? s.backup_item_ids : s.item_ids) : [];
+  const ids = s ? (showBackup ? s.backup_item_ids : s.item_ids) : [];
   const outfit = ids
     .map((id) => byId.get(id))
     .filter((i): i is ItemWithThumb => !!i)
     .sort((a, b) => ORDER.indexOf(a.category) - ORDER.indexOf(b.category));
   const w = s?.weather;
+  const dateLabel = data
+    ? new Date(`${data.today}T12:00:00`).toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })
+    : " ";
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-7">
+      <Brand />
+
+      {s && (
+        <UnderlineTabs
+          tabs={[
+            { value: "main", label: "Today's pick" },
+            { value: "backup", label: "Backup", badge: s.backup_item_ids.length ? 1 : undefined },
+          ]}
+          value={tab}
+          onChange={setTab}
+        />
+      )}
+
       <header>
-        <p className="label">
-          {data
-            ? new Date(`${data.today}T12:00:00`).toLocaleDateString(undefined, {
-                weekday: "long",
-                month: "long",
-                day: "numeric",
-              })
-            : " "}
-        </p>
-        <h1 className="mt-1 text-2xl font-semibold">Today&apos;s outfit</h1>
+        <h1 className="display text-[60px]">Today&rsquo;s look</h1>
+        <p className="mt-3 text-[18px]">{dateLabel}</p>
       </header>
 
-      {error && <p className="rounded-xl bg-red-500/10 px-3 py-2 text-sm text-red-600">{error}</p>}
+      {error && <Alert>{error}</Alert>}
 
       {data && !data.has_location && (
-        <Notice>
+        <Alert kind="info">
           Set your location in{" "}
-          <Link className="underline" href="/settings">
+          <Link className="font-medium underline" href="/settings">
             Settings
           </Link>{" "}
           so I can check the weather.
-        </Notice>
+        </Alert>
       )}
+
       {data && data.item_count === 0 && (
-        <Notice>
-          Your wardrobe is empty.{" "}
-          <Link className="underline" href="/upload">
-            Log today&apos;s outfit
-          </Link>{" "}
-          to start building it, and add{" "}
-          <Link className="underline" href="/inspiration">
-            inspiration photos
-          </Link>{" "}
-          so I learn your style.
-        </Notice>
+        <section className="overflow-hidden rounded-[28px] stripes-sky p-5">
+          <div className="space-y-3 rounded-[6px] bg-[#fdf3d9] px-5 py-7 text-center text-[#2a2118] shadow-sm">
+            <p className="script text-[34px] leading-none">let&rsquo;s get started!</p>
+            <p className="text-[15px]">
+              Log today&rsquo;s outfit to start your wardrobe, and add some inspiration so I learn your style.
+            </p>
+            <div className="flex justify-center gap-2 pt-1">
+              <Link href="/upload" className="btn border-[1.5px] border-[#2a2118] px-4 py-2 text-sm">
+                log outfit
+              </Link>
+              <Link href="/inspiration" className="btn border-[1.5px] border-[#2a2118] px-4 py-2 text-sm">
+                add inspiration
+              </Link>
+            </div>
+          </div>
+        </section>
       )}
 
       {w && (
-        <div className="card flex items-center gap-3 px-4 py-3">
-          <span className="text-3xl">{w.emoji}</span>
-          <div className="text-sm">
-            <div className="font-medium">
-              {Math.round(w.tempMax)}° / {Math.round(w.tempMin)}°C · {w.summary}
-            </div>
-            <div className="text-muted">
-              Feels {Math.round(w.feelsMin)}–{Math.round(w.feelsMax)}° · {w.precipProbability}% rain · {w.season}
-            </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="tile flex flex-col items-center gap-3 bg-sky px-3 py-6 text-center">
+            <span className="text-[17px]">Weather</span>
+            <WeatherIcon code={w.code} className="h-14 w-14" />
+            <span className="display text-[34px]">{Math.round(w.tempMax)}° {shortSummary(w.summary)}</span>
+            <span className="text-[13px] opacity-75">
+              low {Math.round(w.tempMin)}° · {w.precipProbability}% rain
+            </span>
+          </div>
+          <div className="tile flex flex-col items-center gap-3 bg-mustard px-3 py-6 text-center">
+            <span className="text-[17px]">Season</span>
+            <Burst className="h-14 w-14" />
+            <span className="display text-[34px] capitalize">{w.season}</span>
+            <span className="text-[13px] opacity-75">feels {Math.round(w.feelsMin)}–{Math.round(w.feelsMax)}°</span>
           </div>
         </div>
       )}
 
       {s ? (
-        <section className="card overflow-hidden">
-          <div className="border-b border-line px-4 py-3">
-            <div className="flex items-center justify-between gap-2">
-              <h2 className="font-semibold">{showBackup ? "Backup option" : s.headline}</h2>
-              {s.status === "worn" && <span className="rounded-full bg-soft px-2 py-0.5 text-xs">Worn ✓</span>}
+        <section className="space-y-5">
+          {!showBackup && s.reasoning && (
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <span className="flex h-11 w-11 items-center justify-center rounded-full bg-pink">
+                  <Heart className="h-5 w-5 text-accent" />
+                </span>
+                <span className="text-[16px]">{timeLabel(s.created_at)}</span>
+              </div>
+              <p className="script text-[30px] leading-[1.1]">&ldquo;{s.reasoning}&rdquo;</p>
             </div>
-            {!showBackup && s.reasoning && <p className="mt-1 text-sm text-muted">{s.reasoning}</p>}
-          </div>
-          <ul className="grid grid-cols-3 gap-3 p-4">
+          )}
+
+          <h2 className="display text-[34px]">{showBackup ? "Plan B" : s.headline}</h2>
+
+          <ul className="grid grid-cols-3 gap-x-3 gap-y-4">
             {outfit.map((item) => (
               <li key={item.id} className="space-y-1.5">
-                <div className="aspect-square overflow-hidden rounded-xl bg-soft">
-                  {item.thumb_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={item.thumb_url} alt={item.name} className="h-full w-full object-cover" />
-                  ) : (
-                    <div className="flex h-full items-center justify-center text-3xl">👕</div>
-                  )}
-                </div>
-                <div className="text-xs text-muted">{CATEGORY_LABEL[item.category]}</div>
-                <div className="text-sm font-medium leading-tight">{item.name}</div>
+                <ItemThumb item={item} />
+                <div className="text-[13px] font-medium leading-tight">{item.name}</div>
               </li>
             ))}
           </ul>
-          <div className="flex flex-wrap gap-2 border-t border-line px-4 py-3">
-            {s.status !== "worn" && (
+
+          <div className="flex flex-wrap gap-2.5">
+            {s.status === "worn" ? (
+              <span className="btn bg-sage text-tile-ink">Worn today ✓</span>
+            ) : (
               <button
                 className="btn-primary"
                 disabled={!!busy}
                 onClick={() =>
-                  run("wear", () =>
-                    api("/api/suggest/wear", { body: { suggestion_id: s.id, use_backup: showBackup } }),
-                  )
+                  run("wear", () => api("/api/suggest/wear", { body: { suggestion_id: s.id, use_backup: showBackup } }))
                 }
               >
                 {busy === "wear" ? "Saving…" : "I'm wearing this"}
@@ -156,18 +178,14 @@ export default function TodayPage() {
             >
               {busy === "shuffle" ? "Thinking…" : "Shuffle"}
             </button>
-            {s.backup_item_ids.length > 0 && (
-              <button className="btn-ghost" onClick={() => setShowBackup((b) => !b)}>
-                {showBackup ? "Main pick" : "See backup"}
-              </button>
-            )}
           </div>
         </section>
       ) : (
         data?.has_location &&
         data.item_count > 0 && (
-          <section className="card space-y-3 px-4 py-5 text-center">
-            <p className="text-sm text-muted">No suggestion yet today. It arrives at 7 a.m., or get one now.</p>
+          <section className="tile space-y-4 bg-pink px-5 py-7 text-center">
+            <p className="script text-[30px] leading-none">nothing picked yet</p>
+            <p className="text-[15px]">Your outfit arrives at 7 a.m., or I can pick one now.</p>
             <button
               className="btn-primary"
               disabled={!!busy}
@@ -178,14 +196,16 @@ export default function TodayPage() {
           </section>
         )
       )}
-
-      <Link href="/upload" className="btn-ghost w-full">
-        📸 Log what I&apos;m actually wearing
-      </Link>
     </div>
   );
 }
 
-function Notice({ children }: { children: React.ReactNode }) {
-  return <p className="rounded-xl bg-soft px-3 py-2.5 text-sm">{children}</p>;
+function shortSummary(s: string) {
+  return { "Partly cloudy": "& mild", Overcast: "& grey", "Snow showers": "& snowy", Thunderstorm: "& stormy" }[s] ?? `& ${s.toLowerCase()}`;
+}
+
+function timeLabel(iso: string) {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "this morning";
+  return d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" }).toLowerCase();
 }

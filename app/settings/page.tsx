@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { Burst, Sun } from "@/components/Icons";
+import { Alert, Brand } from "@/components/ui";
 import { api, CATEGORY_LABEL, urlBase64ToUint8Array, useOnMount } from "@/lib/client";
 import { CATEGORIES, type Category } from "@/lib/types";
 
@@ -94,17 +96,21 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-7">
+      <Brand />
       <header>
-        <h1 className="text-2xl font-semibold">Settings</h1>
+        <h1 className="display text-[60px]">Settings</h1>
       </header>
 
-      {msg && <p className="rounded-xl bg-green-500/10 px-3 py-2 text-sm text-green-700 dark:text-green-400">{msg}</p>}
-      {error && <p className="rounded-xl bg-red-500/10 px-3 py-2 text-sm text-red-600">{error}</p>}
+      {msg && <Alert kind="ok">{msg}</Alert>}
+      {error && <Alert>{error}</Alert>}
 
-      <section className="card space-y-3 p-4">
-        <h2 className="font-semibold">📍 Location</h2>
-        <p className="text-sm text-muted">
+      <section className="tile space-y-3 bg-sky p-5">
+        <div className="flex items-center justify-between">
+          <h2 className="display text-[32px]">Location</h2>
+          <Sun className="h-10 w-10" />
+        </div>
+        <p className="text-[15px]">
           {p?.lat != null
             ? `Using ${p.lat.toFixed(2)}, ${p.lon?.toFixed(2)} · ${p.timezone}. Updates automatically when you open the app.`
             : "Needed for the weather forecast and to send your suggestion at 7 a.m. your time."}
@@ -114,16 +120,19 @@ export default function SettingsPage() {
         </button>
       </section>
 
-      <section className="card space-y-3 p-4">
-        <h2 className="font-semibold">🔔 7 a.m. notification</h2>
+      <section className="tile space-y-3 bg-mustard p-5">
+        <div className="flex items-center justify-between">
+          <h2 className="display text-[32px]">7 a.m. outfit</h2>
+          <Burst className="h-10 w-10" />
+        </div>
         {!pushSupported ? (
-          <p className="text-sm text-muted">
+          <p className="text-[15px]">
             This browser can&apos;t receive notifications. On iPhone: tap Share → <b>Add to Home Screen</b>, open the
             app from your home screen, then come back here.
           </p>
         ) : (
           <>
-            <p className="text-sm text-muted">
+            <p className="text-[15px]">
               {p?.has_push ? "Enabled. You'll get your outfit every morning." : "Not enabled yet."}
             </p>
             <div className="flex flex-wrap gap-2">
@@ -132,7 +141,7 @@ export default function SettingsPage() {
               </button>
               {p?.has_push && (
                 <button
-                  className="btn-ghost"
+                  className="btn bg-card text-ink"
                   disabled={!!busy}
                   onClick={() => run("test", async () => (await api("/api/push/test", { body: {} }), "Test sent."))}
                 >
@@ -144,18 +153,18 @@ export default function SettingsPage() {
         )}
       </section>
 
-      <section className="card space-y-3 p-4">
-        <h2 className="font-semibold">🔁 Rotation</h2>
-        <p className="text-sm text-muted">Minimum days before I suggest the same piece again.</p>
+      <section className="tile space-y-3 bg-pink p-5">
+        <h2 className="display text-[32px]">Rotation</h2>
+        <p className="text-[15px]">Minimum days before I suggest the same piece again.</p>
         <div className="grid grid-cols-2 gap-2">
           {CATEGORIES.map((c) => (
-            <label key={c} className="flex items-center justify-between gap-2 rounded-xl bg-soft px-3 py-2 text-sm">
+            <label key={c} className="flex items-center justify-between gap-2 rounded-2xl bg-card/70 px-3 py-2 text-[14px]">
               {CATEGORY_LABEL[c]}
               <input
                 type="number"
                 min={0}
                 max={60}
-                className="w-14 rounded-md border border-line bg-card px-2 py-1 text-right"
+                className="w-14 rounded-xl bg-card px-2 py-1.5 text-right"
                 value={rotation[c] ?? 0}
                 onChange={(e) => setRotation({ ...rotation, [c]: Number(e.target.value) })}
               />
@@ -163,7 +172,7 @@ export default function SettingsPage() {
           ))}
         </div>
         <button
-          className="btn-ghost"
+          className="btn-primary"
           disabled={!!busy}
           onClick={() =>
             run("rot", async () => (await api("/api/profile", { method: "PATCH", body: { rotation } }), "Rotation saved."))

@@ -1,26 +1,40 @@
 @import "tailwindcss";
 
+/* Warm cream + colour-block palette (sky, mustard, pink, sage, olive, navy). */
 :root {
-  --bg: #f7f4ef;
-  --card: #ffffff;
-  --ink: #1f1b16;
-  --muted: #6f675d;
-  --line: #e6dfd4;
-  --accent: #8a5a3b;
-  --accent-ink: #ffffff;
-  --soft: #efe7dc;
+  --bg: #fbf6ec;
+  --card: #fffdf7;
+  --ink: #1d1b17;
+  --muted: #6d665a;
+  --line: #e8dfcf;
+  --accent: #c8442f;
+  --accent-ink: #fffdf7;
+  --soft: #f3ebdc;
+  --sky: #b4ddf6;
+  --mustard: #f6c454;
+  --pink: #f6cdd4;
+  --sage: #b9c79a;
+  --olive: #9c9568;
+  --navy: #27385e;
+  --tile-ink: #1d1b17;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #15120f;
-    --card: #1f1b17;
-    --ink: #f1ebe3;
-    --muted: #a69c90;
-    --line: #342d26;
-    --accent: #d39a70;
+    --bg: #17140f;
+    --card: #211d17;
+    --ink: #f3ece0;
+    --muted: #a99f90;
+    --line: #362f26;
+    --accent: #e0694f;
     --accent-ink: #1a120c;
-    --soft: #2a241e;
+    --soft: #2a241c;
+    --sky: #8fc3e3;
+    --mustard: #e6b447;
+    --pink: #e3b2bb;
+    --sage: #a3b383;
+    --olive: #7f7a52;
+    --navy: #3a4f80;
   }
 }
 
@@ -33,7 +47,16 @@
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
   --color-soft: var(--soft);
-  --font-sans: var(--font-geist-sans);
+  --color-sky: var(--sky);
+  --color-mustard: var(--mustard);
+  --color-pink: var(--pink);
+  --color-sage: var(--sage);
+  --color-olive: var(--olive);
+  --color-navy: var(--navy);
+  --color-tile-ink: var(--tile-ink);
+  --font-sans: var(--font-dm-sans);
+  --font-display: var(--font-instrument);
+  --font-script: var(--font-caveat);
 }
 
 body {
@@ -43,20 +66,46 @@ body {
 }
 
 @utility btn {
-  @apply inline-flex items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition active:scale-[0.98] disabled:opacity-50;
+  @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-[15px] font-medium transition active:scale-[0.97] disabled:opacity-50;
 }
 @utility btn-primary {
+  @apply btn bg-ink text-bg;
+}
+@utility btn-accent {
   @apply btn bg-accent text-accent-ink;
 }
 @utility btn-ghost {
-  @apply btn border border-line bg-card text-ink;
+  @apply btn border-[1.5px] border-ink/15 bg-card text-ink;
 }
 @utility card {
-  @apply rounded-2xl border border-line bg-card;
+  @apply rounded-[28px] bg-card shadow-[0_1px_0_var(--line),0_8px_24px_-16px_rgb(60_40_20/0.25)];
+}
+@utility tile {
+  @apply rounded-[28px] text-tile-ink;
 }
 @utility input {
-  @apply w-full rounded-xl border border-line bg-card px-3 py-2 text-sm outline-none focus:border-accent;
+  @apply w-full rounded-2xl border-[1.5px] border-line bg-card px-4 py-3 text-[15px] outline-none focus:border-ink;
 }
 @utility label {
-  @apply text-xs font-medium uppercase tracking-wide text-muted;
+  @apply text-[13px] font-medium text-muted;
+}
+@utility display {
+  @apply font-display leading-[0.95] tracking-[-0.01em];
+}
+@utility script {
+  @apply font-script;
+}
+
+/* Hand-painted style stripes. */
+@utility stripes-sky {
+  background: repeating-linear-gradient(90deg, var(--olive) 0 26px, var(--sky) 26px 40px);
+}
+@utility stripes-navy {
+  background: repeating-linear-gradient(90deg, var(--navy) 0 10px, #efe6d4 10px 22px);
+}
+@utility stripes-pink {
+  background: repeating-linear-gradient(90deg, var(--sage) 0 22px, var(--pink) 22px 50px);
+}
+@utility scallop {
+  background: repeating-linear-gradient(90deg, var(--accent) 0 8px, transparent 8px 22px);
 }

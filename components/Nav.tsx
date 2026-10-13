@@ -2,33 +2,37 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Camera, Gear, Hanger, Home, Sparkle } from "./Icons";
 
 const TABS = [
-  { href: "/", label: "Today", icon: "☀️" },
-  { href: "/upload", label: "Log", icon: "📸" },
-  { href: "/wardrobe", label: "Wardrobe", icon: "👔" },
-  { href: "/inspiration", label: "Style", icon: "✨" },
-  { href: "/settings", label: "Settings", icon: "⚙️" },
+  { href: "/", label: "Today", Icon: Home },
+  { href: "/wardrobe", label: "Wardrobe", Icon: Hanger },
+  { href: "/upload", label: "Log outfit", Icon: Camera },
+  { href: "/inspiration", label: "Style", Icon: Sparkle },
+  { href: "/settings", label: "Settings", Icon: Gear },
 ];
 
+/** Floating row of rounded-square buttons. */
 export default function Nav() {
   const path = usePathname();
   if (path === "/login") return null;
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur">
-      <ul className="mx-auto flex max-w-xl justify-between px-2">
-        {TABS.map((t) => {
-          const active = t.href === "/" ? path === "/" : path.startsWith(t.href);
+    <nav className="pointer-events-none fixed inset-x-0 bottom-0 z-20 pb-[max(0.9rem,env(safe-area-inset-bottom))]">
+      <ul className="pointer-events-auto mx-auto flex w-fit gap-2.5 px-3">
+        {TABS.map(({ href, label, Icon }) => {
+          const active = href === "/" ? path === "/" : path.startsWith(href);
+          const log = href === "/upload";
           return (
-            <li key={t.href} className="flex-1">
+            <li key={href}>
               <Link
-                href={t.href}
-                className={`flex flex-col items-center gap-0.5 py-2.5 text-[11px] ${active ? "font-semibold text-accent" : "text-muted"}`}
+                href={href}
+                aria-label={label}
+                aria-current={active ? "page" : undefined}
+                className={`flex h-[58px] w-[58px] items-center justify-center rounded-[20px] shadow-[0_6px_20px_-6px_rgb(40_30_20/0.35)] transition active:scale-95 ${
+                  active ? "bg-ink text-bg" : log ? "bg-accent text-accent-ink" : "bg-card text-ink"
+                }`}
               >
-                <span className="text-lg leading-none" aria-hidden>
-                  {t.icon}
-                </span>
-                {t.label}
+                <Icon className="h-7 w-7" />
               </Link>
             </li>
           );
