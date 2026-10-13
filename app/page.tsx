@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useState } from "react";
+import EditItemSheet from "@/components/EditItemSheet";
 import { Burst, WeatherIcon } from "@/components/Icons";
 import { Alert, Brand, ItemThumb, UnderlineTabs } from "@/components/ui";
 import { api, useOnMount } from "@/lib/client";
@@ -24,6 +25,7 @@ export default function TodayPage() {
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [tab, setTab] = useState<"main" | "backup">("main");
+  const [editing, setEditing] = useState<ItemWithThumb | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -138,9 +140,11 @@ export default function TodayPage() {
 
           <ul className="grid grid-cols-3 gap-x-3 gap-y-4">
             {outfit.map((item) => (
-              <li key={item.id} className="space-y-1.5">
-                <ItemThumb item={item} />
-                <div className="text-[13px] font-medium leading-tight">{item.name}</div>
+              <li key={item.id}>
+                <button className="w-full space-y-1.5 text-left" onClick={() => setEditing(item)}>
+                  <ItemThumb item={item} />
+                  <div className="text-[13px] font-medium leading-tight">{item.name}</div>
+                </button>
               </li>
             ))}
           </ul>
@@ -183,6 +187,17 @@ export default function TodayPage() {
             </button>
           </section>
         )
+      )}
+      {editing && (
+        <EditItemSheet
+          item={editing}
+          onClose={() => setEditing(null)}
+          onChanged={load}
+          onSaved={() => {
+            setEditing(null);
+            load();
+          }}
+        />
       )}
     </div>
   );
