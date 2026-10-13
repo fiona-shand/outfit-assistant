@@ -36,17 +36,23 @@ export async function downloadImageBase64(path: string): Promise<string> {
   return Buffer.from(await data.arrayBuffer()).toString("base64");
 }
 
+/** Paths starting with "/" are bundled seed images in public/, not storage objects. */
+const isBundled = (p: string) => p.startsWith("/");
+
 export async function removeImages(paths: string[]) {
-  if (paths.length) await db().storage.from(BUCKET).remove(paths);
+  const stored = paths.filter((p) => !isBundled(p));
+  if (stored.length) await db().storage.from(BUCKET).remove(stored);
 }
 
 /** Signed URLs (1 hour) for a set of storage paths. */
 export async function signedUrls(paths: (string | null | undefined)[]): Promise<Record<string, string>> {
-  const unique = [...new Set(paths.filter((p): p is string => !!p))];
-  if (unique.length === 0) return {};
+  const all = [...new Set(paths.filter((p): p is string => !!p))];
+  const out: Record<string, string> = {};
+  for (const p of all) if (isBundled(p)) out[p] = p;
+  const unique = all.filter((p) => !isBundled(p));
+  if (unique.length === 0) return out;
   const { data, error } = await db().storage.from(BUCKET).createSignedUrls(unique, 3600);
   if (error) throw error;
-  const out: Record<string, string> = {};
   for (const d of data) if (d.path && d.signedUrl) out[d.path] = d.signedUrl;
   return out;
 }
