@@ -1,5 +1,5 @@
 -- Fiona's starting wardrobe and outfit history, catalogued from her first
--- nine outfit photos. Dates are approximate - edit if needed.
+-- fourteen outfit photos. Dates are approximate - edit if needed.
 -- Safe to re-run: fixed ids, conflicts are skipped. Thumbnails get added
 -- automatically the first time each piece is matched in a logged photo.
 
@@ -27,6 +27,19 @@ insert into items (id, category, name, colors, pattern, material, formality, war
   ('f5d2bbab-f12f-5153-953e-ba1691f52ea2', 'shoes', 'Cream bow ballet flats', '{cream}', 'solid', 'leather', 3, 2, '{spring,summer,autumn}', 'Soft cream ballet flats with a small bow at the toe.'),
   ('7f7f2abb-5e39-52f0-9f32-44b328583ae4', 'shoes', 'Grey suede retro sneakers', '{grey,white}', 'stripes', 'suede', 2, 3, '{spring,autumn,winter}', 'Pale grey suede trainers with white stripes and chunky white soles (Campus style).'),
   ('c4e1a44b-955e-5094-aa64-c8884e74a577', 'shoes', 'Dark brown chunky leather boots', '{dark brown}', 'solid', 'leather', 3, 4, '{autumn,winter}', 'Chunky dark brown leather ankle boots with a rounded toe and lug sole.'),
+  ('3d29acbf-512d-5490-a52d-5b154eec874e', 'top', 'Grey short-sleeve mock-neck knit', '{mid grey}', 'solid', 'soft knit', 3, 2, '{spring,autumn,winter}', 'Fitted fuzzy grey knit tee with a small mock neck and rolled raw hem.'),
+  ('01e3fc88-5c12-5209-a64d-bf8cf91ea0d3', 'top', 'Charcoal fitted long-sleeve top', '{charcoal,navy}', 'solid', 'stretch jersey', 3, 2, '{autumn,winter,spring}', 'Second-skin long-sleeve crew-neck in a soft charcoal-navy; great base layer.'),
+  ('2f1e0e94-3c20-53b8-9777-f5e208f5cfc5', 'top', 'Navy fitted baby tee', '{navy}', 'solid', 'cotton jersey', 2, 1, '{spring,summer,autumn}', 'Snug cap-sleeve navy tee, tucked in with a belt.'),
+  ('db0a928f-4869-5535-a37f-1fe39ef44277', 'top', 'Dark indigo denim shirt', '{indigo}', 'solid', 'denim', 3, 3, '{autumn,winter,spring}', 'Dark rinse button-up denim shirt for double-denim looks, worn tucked.'),
+  ('536328a6-114b-54e9-9118-f8b1188b0c56', 'top', 'Black satin button-up shirt', '{black}', 'solid', 'satin', 4, 2, '{autumn,winter,spring,summer}', 'Fluid black satin shirt with a soft collar, worn open at the neck.'),
+  ('ee468814-cabf-5565-b26e-82f5cd9ccf99', 'bottom', 'Grey pleated wide-leg trousers', '{mid grey}', 'solid', 'suiting', 4, 3, '{autumn,winter,spring}', 'High-waisted mid-grey pleated trousers with a long straight-wide leg.'),
+  ('ed2662b6-eae8-5889-bf4d-c4603b65d526', 'outerwear', 'Black pinstripe oversized blazer', '{black,white}', 'pinstripe', 'suiting', 4, 3, '{autumn,winter,spring}', 'Long boyfriend-fit black blazer with white pinstripes; throws over denim or trousers.'),
+  ('db79b97c-fec2-51f8-b0f1-cc2dcb6cb1f7', 'shoes', 'Red suede sneakers', '{red,white}', 'stripe', 'suede', 2, 3, '{spring,summer,autumn}', 'Slim red suede trainers with a white side stripe (Speedcat style) - instant colour pop.'),
+  ('40996183-22d5-55fc-b4bf-cd4d10067424', 'shoes', 'Black leather gum-sole sneakers', '{black,white}', 'solid', 'leather', 2, 3, '{spring,autumn,winter}', 'Low black leather trainers with gum soles (Samba style).'),
+  ('517f8125-4c3a-51fb-9fc6-1ff8b8a3281a', 'shoes', 'Dark brown patent square-toe flats', '{dark brown}', 'solid', 'patent leather', 3, 2, '{autumn,winter,spring}', 'Glossy chocolate square-toe ballet flats; polished with cuffed denim.'),
+  ('cbecbcc3-def1-5cd5-ab0f-2cce9eb1bf1b', 'accessory', 'Silver star pendant necklace', '{silver}', 'solid', 'silver', 2, 3, '{}', 'Long silver chain with a chunky star pendant.'),
+  ('4bd917b5-b932-5881-8cec-3a335078aa0c', 'accessory', 'Green paisley silk neck scarf', '{green,cream}', 'paisley', 'silk', 3, 3, '{}', 'Small green paisley scarf knotted bandana-style at the neck.'),
+  ('d6032f29-42ef-5913-9601-8060fc0bbee8', 'accessory', 'Chunky gold chain necklace', '{gold}', 'solid', 'gold-tone metal', 3, 3, '{}', 'Short chunky gold chain, layers well with open collars.'),
   ('471cb808-9d42-5f37-bb4a-eb9ae76e1425', 'accessory', 'Gold oval pendant necklace', '{gold}', 'solid', 'gold', 3, 3, '{}', 'Fine gold chain with a small oval locket-style pendant.'),
   ('d905823e-cf64-5c02-870b-73999d4f5132', 'accessory', 'Long pearl and gold bead necklace', '{cream,gold}', 'beaded', 'pearl', 3, 3, '{}', 'Long strand of small pearls and gold beads; layer with the oval pendant.'),
   ('ac61d21e-c95c-5818-ae24-618dbf40b91e', 'accessory', 'Silver bracelet stack', '{silver}', 'solid', 'silver', 3, 3, '{}', 'A few slim silver bangles and chain bracelets worn together.'),
@@ -34,6 +47,48 @@ insert into items (id, category, name, colors, pattern, material, formality, war
   ('4467f7a2-fa57-51c1-8509-16abedb3b13d', 'accessory', 'Chocolate leather tote', '{chocolate brown}', 'solid', 'leather', 3, 3, '{}', 'Slouchy dark brown leather tote with long shoulder straps.'),
   ('7f3b069c-91f2-50e2-b292-2eaff5309ddf', 'accessory', 'Black leather shoulder bag', '{black}', 'solid', 'leather', 3, 3, '{}', 'Slim black leather shoulder bag that sits under the arm.')
 on conflict (id) do nothing;
+
+insert into outfit_logs (id, worn_on, status) values ('dfb9d0c5-41cf-58cc-8cd7-5d7a3d7926b9', '2026-09-22', 'confirmed') on conflict (id) do nothing;
+insert into outfit_log_items (log_id, item_id) values
+  ('dfb9d0c5-41cf-58cc-8cd7-5d7a3d7926b9', '3d29acbf-512d-5490-a52d-5b154eec874e'),
+  ('dfb9d0c5-41cf-58cc-8cd7-5d7a3d7926b9', 'ee468814-cabf-5565-b26e-82f5cd9ccf99'),
+  ('dfb9d0c5-41cf-58cc-8cd7-5d7a3d7926b9', 'db79b97c-fec2-51f8-b0f1-cc2dcb6cb1f7')
+on conflict do nothing;
+
+insert into outfit_logs (id, worn_on, status) values ('d19ffa25-2a03-53de-a376-c7e842d81a25', '2026-09-23', 'confirmed') on conflict (id) do nothing;
+insert into outfit_log_items (log_id, item_id) values
+  ('d19ffa25-2a03-53de-a376-c7e842d81a25', 'db0a928f-4869-5535-a37f-1fe39ef44277'),
+  ('d19ffa25-2a03-53de-a376-c7e842d81a25', '6b1a1899-a872-5b00-8107-26b43d188bcd'),
+  ('d19ffa25-2a03-53de-a376-c7e842d81a25', '860b2e85-f13c-5382-9bce-85622c5bd827'),
+  ('d19ffa25-2a03-53de-a376-c7e842d81a25', 'd905823e-cf64-5c02-870b-73999d4f5132'),
+  ('d19ffa25-2a03-53de-a376-c7e842d81a25', '517f8125-4c3a-51fb-9fc6-1ff8b8a3281a'),
+  ('d19ffa25-2a03-53de-a376-c7e842d81a25', 'ac61d21e-c95c-5818-ae24-618dbf40b91e')
+on conflict do nothing;
+
+insert into outfit_logs (id, worn_on, status) values ('d32a2f3b-3dd8-58eb-be6d-a3bf311f4059', '2026-09-24', 'confirmed') on conflict (id) do nothing;
+insert into outfit_log_items (log_id, item_id) values
+  ('d32a2f3b-3dd8-58eb-be6d-a3bf311f4059', '2f1e0e94-3c20-53b8-9777-f5e208f5cfc5'),
+  ('d32a2f3b-3dd8-58eb-be6d-a3bf311f4059', '4bd917b5-b932-5881-8cec-3a335078aa0c'),
+  ('d32a2f3b-3dd8-58eb-be6d-a3bf311f4059', '0e153b19-f579-5fdd-987f-d9934c3a40c3'),
+  ('d32a2f3b-3dd8-58eb-be6d-a3bf311f4059', '860b2e85-f13c-5382-9bce-85622c5bd827')
+on conflict do nothing;
+
+insert into outfit_logs (id, worn_on, status) values ('a939361c-02c3-511a-b033-64c0d0323930', '2026-09-25', 'confirmed') on conflict (id) do nothing;
+insert into outfit_log_items (log_id, item_id) values
+  ('a939361c-02c3-511a-b033-64c0d0323930', 'ed2662b6-eae8-5889-bf4d-c4603b65d526'),
+  ('a939361c-02c3-511a-b033-64c0d0323930', '536328a6-114b-54e9-9118-f8b1188b0c56'),
+  ('a939361c-02c3-511a-b033-64c0d0323930', '6b1a1899-a872-5b00-8107-26b43d188bcd'),
+  ('a939361c-02c3-511a-b033-64c0d0323930', '860b2e85-f13c-5382-9bce-85622c5bd827'),
+  ('a939361c-02c3-511a-b033-64c0d0323930', 'd6032f29-42ef-5913-9601-8060fc0bbee8')
+on conflict do nothing;
+
+insert into outfit_logs (id, worn_on, status) values ('a0cc9cc8-abed-554c-a10f-00535685c56e', '2026-09-28', 'confirmed') on conflict (id) do nothing;
+insert into outfit_log_items (log_id, item_id) values
+  ('a0cc9cc8-abed-554c-a10f-00535685c56e', '01e3fc88-5c12-5209-a64d-bf8cf91ea0d3'),
+  ('a0cc9cc8-abed-554c-a10f-00535685c56e', 'ee468814-cabf-5565-b26e-82f5cd9ccf99'),
+  ('a0cc9cc8-abed-554c-a10f-00535685c56e', '40996183-22d5-55fc-b4bf-cd4d10067424'),
+  ('a0cc9cc8-abed-554c-a10f-00535685c56e', 'cbecbcc3-def1-5cd5-ab0f-2cce9eb1bf1b')
+on conflict do nothing;
 
 insert into outfit_logs (id, worn_on, status) values ('a5292488-ead6-57a7-b2bc-a45e6352609d', '2026-09-29', 'confirmed') on conflict (id) do nothing;
 insert into outfit_log_items (log_id, item_id) values

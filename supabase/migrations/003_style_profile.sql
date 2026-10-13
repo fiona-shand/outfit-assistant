@@ -1,5 +1,5 @@
 -- Starter style profile distilled from Fiona's Pinterest boards
--- (Aritzia, LDN winter fits!, Work). Editable later on the app's Style page,
+-- (Aritzia, LDN winter fits!, Work) and her own outfit photos. Editable later on the app's Style page,
 -- and rewritten automatically when inspiration photos are added there.
 
 update profile set style_profile = btrim($style$
@@ -20,6 +20,9 @@ Formality range
 
 Pairing rules
 - White or grey tee under a blazer; jumper knotted over the shoulders
+- Collared shirt (pale blue, striped) under a V-neck or crewneck, collar and hem showing
+- Double denim cinched with a black belt; tonal grey-on-grey with one bright shoe
+- Little extras: a silk bandana at the neck, layered pendants, a star or pearl necklace
 - Lace slip hem peeking under a knit or tee
 - One pattern max: pinstripe, houndstooth, polka dot, Breton stripe or Fair Isle
 - Tonal grey or navy outfits, broken up with one accent colour
