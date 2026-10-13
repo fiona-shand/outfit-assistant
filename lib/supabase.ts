@@ -6,8 +6,8 @@ let client: SupabaseClient | null = null;
 /** Server-side Supabase client using the service-role key (bypasses RLS). */
 export function db(): SupabaseClient {
   if (!client) {
-    const url = process.env.SUPABASE_URL;
-    const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const url = supabaseUrl();
+    const key = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
     if (!url || !key) throw new Error("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set");
     const role = keyRole(key);
     if (role === "anon" || role === "publishable") {
@@ -60,5 +60,17 @@ export function keyRole(key: string): string {
     return typeof payload.role === "string" ? payload.role : "unknown";
   } catch {
     return "unknown";
+  }
+}
+
+/** SUPABASE_URL tidied up: stray whitespace, a missing scheme or a pasted /rest/v1 path. */
+export function supabaseUrl(): string | undefined {
+  const raw = process.env.SUPABASE_URL?.trim();
+  if (!raw) return undefined;
+  const withScheme = /^https?:\/\//.test(raw) ? raw : `https://${raw}`;
+  try {
+    return new URL(withScheme).origin;
+  } catch {
+    return withScheme;
   }
 }
