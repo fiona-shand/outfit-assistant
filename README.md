@@ -24,6 +24,7 @@ Next.js 16 (App Router) · Tailwind 4 · Supabase (Postgres + Storage + `pg_cron
 ### 1. Supabase (database + photo storage + scheduler)
 1. Create a free project at <https://supabase.com>.
 2. **SQL Editor** → paste and run `supabase/migrations/001_init.sql`.
+   Then run `supabase/migrations/003_style_profile.sql` to load your starter style notes (from your Pinterest boards).
 3. **Project Settings → API**: copy the **Project URL** and the **service_role** key (keep this secret).
 
 ### 2. Keys
