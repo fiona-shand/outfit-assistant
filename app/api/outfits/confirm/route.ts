@@ -37,9 +37,9 @@ export const POST = route(async (req: Request) => {
     if ("existing_id" in d) {
       itemIds.add(d.existing_id);
       if (d.thumb) {
-        // Give existing items without a thumbnail one from this photo.
+        // Give existing items a thumbnail from this photo if they have none, or only a seed image.
         const { data: existing } = await db().from("items").select("thumb_path").eq("id", d.existing_id).single();
-        if (existing && !existing.thumb_path) {
+        if (existing && (!existing.thumb_path || existing.thumb_path.startsWith("/"))) {
           const path = await uploadImage(`items/${d.existing_id}.jpg`, stripDataUrl(d.thumb));
           await db().from("items").update({ thumb_path: path }).eq("id", d.existing_id);
         }
