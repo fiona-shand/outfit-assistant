@@ -2,7 +2,7 @@
 -- (Aritzia, LDN winter fits!, Work). Editable later on the app's Style page,
 -- and rewritten automatically when inspiration photos are added there.
 
-update profile set style_profile = $style$
+update profile set style_profile = trim($style$
 Signature palette
 - Grey in every shade (heather, charcoal, mid-grey suiting), black, navy, white, camel/tan and chocolate brown
 - Denim from mid-blue to dark raw indigo
@@ -32,6 +32,6 @@ Shoes & accessories
 
 Avoid
 - Skinny jeans, bodycon, loud logos, mixing two prints, more than one statement colour
-$style$,
+$style$),
 updated_at = now()
 where id = 1;
