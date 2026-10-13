@@ -156,12 +156,21 @@ export function recentCombos(
   return keys;
 }
 
-/** An outfit must have shoes and either a dress or a top + bottom. */
+/**
+ * A wearable outfit: one pair of shoes and either a dress or a single bottom with
+ * 1-2 tops (two only when layering, e.g. a knit over a collared shirt), at most one
+ * outer layer and at most two accessories.
+ */
 export function isCompleteOutfit(itemIds: string[], itemsById: Map<string, Item>): boolean {
-  const cats = new Set(itemIds.map((id) => itemsById.get(id)?.category));
-  if (cats.has(undefined)) return false;
-  const body = cats.has("dress") || (cats.has("top") && cats.has("bottom"));
-  return body && cats.has("shoes");
+  const count: Partial<Record<Category, number>> = {};
+  for (const id of itemIds) {
+    const c = itemsById.get(id)?.category;
+    if (!c) return false;
+    count[c] = (count[c] ?? 0) + 1;
+  }
+  const n = (c: Category) => count[c] ?? 0;
+  if (n("shoes") !== 1 || n("outerwear") > 1 || n("accessory") > 2 || n("top") > 2 || n("bottom") > 1) return false;
+  return n("dress") === 1 ? n("bottom") === 0 : n("dress") === 0 && n("top") >= 1 && n("bottom") === 1;
 }
 
 /**
