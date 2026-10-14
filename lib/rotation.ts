@@ -37,8 +37,12 @@ export function targetWarmth(w: Weather): number {
   return 5;
 }
 
-export function needsOuterwear(w: Weather): boolean {
-  return (w.feelsMax + w.feelsMin) / 2 < 16 || isWet(w) || w.windMax >= 35;
+/**
+ * Coats and jackets are for getting to work, not part of the indoor outfit, so they're
+ * only offered (as an optional extra) on genuinely cold, wet or windy days.
+ */
+export function needsCoat(w: Weather): boolean {
+  return (w.feelsMax + w.feelsMin) / 2 < 12 || isWet(w) || w.windMax >= 35;
 }
 
 export function fitsWeather(item: Item, w: Weather): boolean {
@@ -185,7 +189,7 @@ export function fallbackOutfit(
 ): string[] {
   const shoes = ranked.shoes[0]?.item.id;
   const extras: string[] = [];
-  if (needsOuterwear(weather) && ranked.outerwear[0]) extras.push(ranked.outerwear[0].item.id);
+  if (needsCoat(weather) && ranked.outerwear[0]) extras.push(ranked.outerwear[0].item.id);
   if (ranked.accessory[0]) extras.push(ranked.accessory[0].item.id);
 
   const options: string[][] = [];

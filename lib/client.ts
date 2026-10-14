@@ -108,11 +108,11 @@ export const CATEGORY_PLURAL: Record<string, string> = {
 
 /** What belongs in each category, shown when editing a piece. */
 export const CATEGORY_HINT: Record<string, string> = {
-  top: "tees, shirts, sweaters, cardigans",
+  top: "tees, shirts, knits, cardigans, blazers",
   bottom: "trousers, jeans, skirts",
   dress: "dresses, jumpsuits",
   shoes: "sneakers, flats, boots",
-  outerwear: "coats, jackets, blazers",
+  outerwear: "coats & jackets for outside - an optional extra",
   accessory: "bags, belts, jewellery, scarves",
 };
 

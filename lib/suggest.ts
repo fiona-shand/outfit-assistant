@@ -6,7 +6,7 @@ import {
   comboKey,
   fallbackOutfit,
   isCompleteOutfit,
-  needsOuterwear,
+  needsCoat,
   rankCandidates,
   recentCombos,
   type ScoredItem,
@@ -52,8 +52,10 @@ const Pick = z.object({
 const SYSTEM = `You are a personal stylist choosing today's work outfit from the client's own wardrobe.
 Rules:
 - Only use item ids from the candidate list.
-- A complete outfit = one pair of shoes + (a dress OR one bottom + one top). Add outerwear only when the weather calls for it (at most one). Add 0-2 accessories that suit the look.
-- Never stack more than two tops. Two tops is only for real layering: a knit or jumper worn over a collared shirt or tee, the way the client likes it. A cardigan counts as a top.
+- A complete outfit = one pair of shoes + (a dress OR one bottom + one top). Add 0-2 accessories that suit the look.
+- The outfit is what she wears indoors at work. Blazers and cardigans are indoor pieces and count as tops.
+- Coats and jackets (the OUTERWEAR list) are NOT part of the outfit. Only when the weather line says "Coat advised", add exactly one as an optional extra for the commute; otherwise include none.
+- Never stack more than two tops. Two tops is only for real layering: a knit, cardigan or blazer worn over a shirt or tee, the way the client likes it.
 - Candidates are already filtered for weather and sorted freshest-first (least recently worn). Prefer fresher items unless a fresher one clashes.
 - Never repeat any of the "recent outfits" combinations listed.
 - Follow the client's style profile closely.`;
@@ -81,7 +83,7 @@ function weatherBlock(w: Weather): string {
     w.feelsMin,
   )}-${Math.round(w.feelsMax)}°C), rain chance ${w.precipProbability}%, wind up to ${Math.round(
     w.windMax,
-  )} km/h. Season: ${w.season}.${needsOuterwear(w) ? " Outerwear recommended." : ""}${
+  )} km/h. Season: ${w.season}.${needsCoat(w) ? " Coat advised for the commute." : " No coat needed."}${
     isWet(w) ? " Wet day - avoid delicate shoes." : ""
   }`;
 }
@@ -154,11 +156,17 @@ export async function generateSuggestion(opts: GenerateOptions = {}): Promise<Su
       });
       headline = pick.headline;
       reasoning = pick.reasoning;
-      if (valid(pick.item_ids)) {
-        chosen = pick.item_ids;
-        backup = valid(pick.backup_item_ids) ? pick.backup_item_ids : [];
-      } else if (valid(pick.backup_item_ids)) {
-        chosen = pick.backup_item_ids;
+      // Coats are an optional extra: drop any Claude added on a day that doesn't need one.
+      const coatOk = needsCoat(weather);
+      const tidy = (ids: string[]) =>
+        coatOk ? ids : ids.filter((id) => itemsById.get(id)?.category !== "outerwear");
+      const main = tidy(pick.item_ids);
+      const alt = tidy(pick.backup_item_ids);
+      if (valid(main)) {
+        chosen = main;
+        backup = valid(alt) ? alt : [];
+      } else if (valid(alt)) {
+        chosen = alt;
         headline = null;
         reasoning = null;
       }
