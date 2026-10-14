@@ -5,6 +5,7 @@ import {
   fallbackOutfit,
   fitsWeather,
   isCompleteOutfit,
+  needsCoat,
   itemStats,
   rankCandidates,
   recentCombos,
@@ -63,6 +64,13 @@ describe("weather fit", () => {
     expect(fitsWeather(item("top", { seasons: ["summer"] }), mild)).toBe(false);
     expect(fitsWeather(item("top", { warmth: 5 }), { ...mild, feelsMax: 30, feelsMin: 24 })).toBe(false);
     expect(fitsWeather(item("top", { warmth: 3, seasons: ["autumn"] }), mild)).toBe(true);
+  });
+
+  it("only offers a coat on cold, wet or windy days", () => {
+    expect(needsCoat(mild)).toBe(false); // feels 11-17, dry
+    expect(needsCoat({ ...mild, feelsMax: 12, feelsMin: 6 })).toBe(true);
+    expect(needsCoat({ ...mild, precipProbability: 70 })).toBe(true);
+    expect(needsCoat({ ...mild, windMax: 40 })).toBe(true);
   });
 
   it("keeps suede shoes out of the rain", () => {

@@ -93,8 +93,27 @@ export const CATEGORY_LABEL: Record<string, string> = {
   bottom: "Bottom",
   dress: "Dress",
   shoes: "Shoes",
-  outerwear: "Outerwear",
+  outerwear: "Coat / jacket",
   accessory: "Accessory",
+};
+
+export const CATEGORY_PLURAL: Record<string, string> = {
+  top: "Tops",
+  bottom: "Bottoms",
+  dress: "Dresses",
+  shoes: "Shoes",
+  outerwear: "Coats & jackets",
+  accessory: "Accessories",
+};
+
+/** What belongs in each category, shown when editing a piece. */
+export const CATEGORY_HINT: Record<string, string> = {
+  top: "tees, shirts, knits, cardigans, blazers",
+  bottom: "trousers, jeans, skirts",
+  dress: "dresses, jumpsuits",
+  shoes: "sneakers, flats, boots",
+  outerwear: "coats & jackets for outside - an optional extra",
+  accessory: "bags, belts, jewellery, scarves",
 };
 
 /** Runs an async loader once after mount (keeps data fetching out of the effect body). */
